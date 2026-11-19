@@ -10,7 +10,7 @@
 
 <br><br>
 
-## To Reviewers 
+## To Reviewers
 
 <!-- 리뷰어에게 전달하고 싶은 말을 써주세요 -->
 
