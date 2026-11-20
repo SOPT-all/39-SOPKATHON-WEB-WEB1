@@ -1,0 +1,72 @@
+
+name: Create Release PR
+
+# GitHub Actions에서 버튼을 눌렀을 때 실행
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create release pull request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+
+            // 기존 릴리즈 PR 중복 생성 방지
+            const { data: existingPRs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: "open",
+              base: "main",
+              head: `${owner}:dev`
+            });
+
+            if (existingPRs.length > 0) {
+              core.info(`이미 릴리즈 PR #${existingPRs[0].number}이 열려 있습니다.`);
+              return;
+            }
+
+            // dev에 배포할 변경 사항이 있는지 확인
+            const { data: comparison } = await github.rest.repos.compareCommits({
+              owner,
+              repo,
+              base: "main",
+              head: "dev"
+            });
+
+            if (comparison.status === "identical" || comparison.status === "behind") {
+                core.info("배포할 새로운 변경 사항이 없습니다.");
+                return;
+            }
+
+            // dev → main 릴리즈 PR 생성
+            const { data: pr } = await github.rest.pulls.create({
+              owner,
+              repo,
+              title: "[Chore] 릴리즈 PR",
+              head: "dev",
+              base: "main",
+              body: [
+                "## ISSUE 🔗",
+                "",
+                "릴리즈 PR 자동 생성",
+                "",
+                "## What is this PR? 🔍",
+                "",
+                "`dev`의 변경 사항을 `main`에 반영하기 위한 릴리즈 PR입니다.",
+                "",
+                "## To Reviewers",
+                "",
+                "변경 사항을 확인한 후 직접 머지해 주세요."
+              ].join("\n")
+            });
+
+            core.info(`릴리즈 PR 생성 완료: ${pr.html_url}`);
