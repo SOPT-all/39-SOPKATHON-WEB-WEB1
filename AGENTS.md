@@ -51,7 +51,12 @@
 - 클래스 순서는 Prettier 플러그인에 맡깁니다. `cn`, `clsx`, `twMerge` 내부 클래스도 정렬 대상입니다.
 - 디자인이 확정되면 공통 색상·폰트 토큰을 `global.css`의 `@theme`에 정의하고 재사용합니다. 확정되지 않은 디자인 수치를 임의로 공통 규칙으로 만들지 않습니다.
 - 일반 이미지는 `src/shared/assets/images`, SVG는 `src/shared/assets/svg`, 폰트는 `src/shared/assets/fonts`에 저장합니다.
-- 에셋 파일명은 용도를 알 수 있는 영문 소문자 kebab-case를 사용합니다. 예: `logo-symbol.svg`, `home-banner.webp`
+- 에셋 파일명은 용도를 알 수 있는 영문 소문자 kebab-case를 사용하고, 종류에 맞는 접두어를 붙입니다.
+  - `icon-`: 아이콘. 예: `icon-close.svg`, `icon-chevron-down.svg`
+  - `logo-`: 로고. 예: `logo-symbol.svg`
+  - `img-`: 사진·일러스트 등 일반 이미지. 예: `img-home-banner.webp`
+- 같은 아이콘의 상태가 다르면 뒤에 상태를 붙입니다. 예: `icon-heart.svg`, `icon-heart-active.svg`
+- Figma에서 내보낸 파일명이 규칙과 다르면 저장할 때 바꾸고, 같은 에셋을 다른 이름으로 중복 저장하지 않습니다.
 - SVG를 컴포넌트로 가져오는 별도 플러그인은 전제하지 않습니다. 현재 설정에서는 URL import로 사용합니다.
 - 이미지에는 용도에 맞는 `alt`를 작성하고 장식용 이미지에는 빈 `alt`를 사용합니다.
 
