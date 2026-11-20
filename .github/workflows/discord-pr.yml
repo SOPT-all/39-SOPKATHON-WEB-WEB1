@@ -1,0 +1,92 @@
+name: Discord PR Notification
+
+# PR 생성 및 종료 시 실행
+on:
+  pull_request_target:
+    types: [opened, closed]
+
+permissions:
+  contents: read
+
+jobs:
+  notify-discord:
+    # PR 생성 또는 실제 머지 완료 시에만 알림 전송
+    if: >-
+      github.event.action == 'opened' ||
+      (github.event.action == 'closed' &&
+      github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR notification to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Webhook URL 등록 여부 확인
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "::error::DISCORD_WEBHOOK_URL is not configured"
+            exit 1
+          fi
+
+          # GitHub 이벤트에서 PR 정보 추출
+          PR_NUMBER=$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")
+          PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
+          PR_AUTHOR=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+          PR_URL=$(jq -r '.pull_request.html_url' "$GITHUB_EVENT_PATH")
+          HEAD_BRANCH=$(jq -r '.pull_request.head.ref' "$GITHUB_EVENT_PATH")
+          BASE_BRANCH=$(jq -r '.pull_request.base.ref' "$GITHUB_EVENT_PATH")
+          ACTION=$(jq -r '.action' "$GITHUB_EVENT_PATH")
+
+         
+
+          # PR 생성과 머지 완료에 따라 알림 제목 및 색상 구분
+          if [ "$ACTION" = "opened" ]; then
+            TITLE="🌱 새로운 PR이 열렸어요!"
+            COLOR=3447003
+          else
+            TITLE="🎉 PR이 머지되었어요!"
+            COLOR=3066993
+          fi
+
+
+
+          # Discord Embed 메시지 생성
+          PAYLOAD=$(jq -n \
+            --arg username "SOPKATHON 알림봇" \
+            --arg title "$TITLE" \
+            --arg pr_title "$PR_TITLE" \
+            --argjson pr_number "$PR_NUMBER" \
+            --arg author "$PR_AUTHOR" \
+            --arg url "$PR_URL" \
+            --arg head "$HEAD_BRANCH" \
+            --arg base "$BASE_BRANCH" \
+            --arg repo "$REPOSITORY" \
+            --argjson color "$COLOR" \
+            '{
+              username: $username,
+              allowed_mentions: {parse: []},
+              embeds: [{
+                title: $title,
+                url: $url,
+                color: $color,
+                description: ("**[PR #" + ($pr_number | tostring) + "] " + $pr_title + "**"),
+                fields: [
+                  {name: "👤 작성자", value: $author, inline: true},
+                  {name: "📦 Repository", value: $repo, inline: true},
+                  {name: "🌿 브랜치", value: ("`" + $head + "` → `" + $base + "`"), inline: false},
+                  {name: "🔗 PR 링크", value: $url, inline: false}
+                ]
+              }]
+            }')
+
+          # Discord Webhook으로 알림 전송
+          curl --fail-with-body --silent --show-error \
+            --retry 3 \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL"
+
+          echo "Discord PR notification sent"
