@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import BarRecordControlsBottom from '@/pages/recording/components/BarRecordControlsBottom';
@@ -7,11 +7,16 @@ import RecordingPrompt from '@/pages/recording/components/RecordingPrompt';
 import RecordingTooltip from '@/pages/recording/components/RecordingTooltip';
 import TextCard from '@/pages/recording/components/TextCard';
 import RecordingTranscript from '@/pages/recording/components/RecordingTranscript';
+import StoryGenerationLoadingDialog from '@/pages/recording/components/StoryGenerationLoadingDialog';
 import useRecordingTimer from '@/pages/recording/hooks/useRecordingTimer';
 import useMicrophoneRecording from '@/pages/recording/hooks/useMicrophoneRecording';
 import Button from '@/shared/components/Button';
 import Header from '@/shared/components/header';
 import { setRecordedAudio } from '@/shared/utils/recordedAudio';
+import { cn } from '@/shared/utils/cn';
+
+// Replace this preview delay with the world-generation API loading state when connected.
+const STORY_GENERATION_PREVIEW_DELAY_MS = 1200;
 
 type RecordingPageProps = {
   transcript?: string;
@@ -20,10 +25,19 @@ type RecordingPageProps = {
 function RecordingPage({ transcript = '' }: RecordingPageProps) {
   const tooltipId = useId();
   const navigate = useNavigate();
+  const [isGenerating, setIsGenerating] = useState(false);
   const { status, error, startRecording, stopRecording } = useMicrophoneRecording();
   const isRecording = status === 'recording';
-  const hasStarted = isRecording || status === 'stopping';
+  const hasStarted = isRecording || status === 'stopping' || isGenerating;
   const { elapsedSeconds, resetTimer } = useRecordingTimer(isRecording);
+
+  useEffect(() => {
+    if (!isGenerating) return;
+    const timeoutId = window.setTimeout(() => {
+      void navigate('/story-review');
+    }, STORY_GENERATION_PREVIEW_DELAY_MS);
+    return () => window.clearTimeout(timeoutId);
+  }, [isGenerating, navigate]);
 
   const handleStartRecording = () => {
     resetTimer();
@@ -35,7 +49,7 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
     const audio = await stopRecording();
     if (!audio) return;
     setRecordedAudio(audio);
-    void navigate('/story-review');
+    setIsGenerating(true);
   };
 
   return (
@@ -49,7 +63,10 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
       <main
         aria-label="추억 녹음"
         tabIndex={0}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-[66px] pb-6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-green-700"
+        className={cn(
+          'min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-[66px] pb-6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-green-700',
+          isGenerating && 'overflow-hidden',
+        )}
       >
         <RecordingPrompt message={hasStarted ? '녹음이 시작됐어요.' : '녹음이 준비됐어요.'} />
         {error && (
@@ -75,8 +92,8 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
                 'aria-label': '녹음 끝내기',
                 'aria-describedby': tooltipId,
                 onClick: handleStopRecording,
-                disabled: status === 'stopping',
-                'aria-busy': status === 'stopping',
+                disabled: status === 'stopping' || isGenerating,
+                'aria-busy': status === 'stopping' || isGenerating,
               }}
             />
           </>
@@ -94,6 +111,7 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
           </div>
         )}
       </div>
+      {isGenerating && <StoryGenerationLoadingDialog />}
     </div>
   );
 }
