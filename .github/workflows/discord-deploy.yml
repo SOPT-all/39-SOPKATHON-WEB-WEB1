@@ -1,0 +1,77 @@
+
+name: Discord Deploy Notification
+
+# Vercel에서 배포 성공 이벤트가 전달되면 실행
+on:
+  repository_dispatch:
+    types: [vercel.deployment.success]
+
+permissions:
+  contents: read
+
+jobs:
+  notify-discord:
+    # main 브랜치의 Production 배포만 알림
+    if: >-
+      github.event.client_payload.environment == 'production' &&
+      github.event.client_payload.git.ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send deploy notification to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          # Webhook URL 등록 여부 확인
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "::error::DISCORD_WEBHOOK_URL is not configured"
+            exit 1
+          fi
+
+          # Vercel 배포 이벤트에서 정보 추출
+          DEPLOY_URL=$(jq -r '.client_payload.url // empty' "$GITHUB_EVENT_PATH")
+          DEPLOY_ENV=$(jq -r '.client_payload.environment // empty' "$GITHUB_EVENT_PATH")
+          BRANCH=$(jq -r '.client_payload.git.ref // empty' "$GITHUB_EVENT_PATH")
+          COMMIT=$(jq -r '.client_payload.git.shortSha // empty' "$GITHUB_EVENT_PATH")
+          PROJECT=$(jq -r '.client_payload.project.name // empty' "$GITHUB_EVENT_PATH")
+
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "::error::Deployment URL is missing"
+            exit 1
+          fi
+
+          # Discord Embed 메시지 생성
+          PAYLOAD=$(jq -n \
+            --arg username "SOPKATHON 알림봇" \
+            --arg url "$DEPLOY_URL" \
+            --arg environment "$DEPLOY_ENV" \
+            --arg branch "$BRANCH" \
+            --arg commit "$COMMIT" \
+            --arg project "$PROJECT" \
+            '{
+              username: $username,
+              allowed_mentions: {parse: []},
+              embeds: [{
+                title: "🚀 Vercel 배포가 완료되었어요!",
+                url: $url,
+                color: 3066993,
+                description: ("**" + $project + "**"),
+                fields: [
+                  {name: "🌐 배포 환경", value: $environment, inline: true},
+                  {name: "🌿 브랜치", value: $branch, inline: true},
+                  {name: "🔗 배포 URL", value: $url, inline: false},
+                  {name: "📦 커밋", value: ($commit | if . == "" then "정보 없음" else . end), inline: false}
+                ]
+              }]
+            }')
+
+          # Discord Webhook으로 배포 완료 알림 전송
+          curl --fail-with-body --silent --show-error \
+            --retry 3 \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL"
+
+          echo "Discord deployment notification sent"
