@@ -12,14 +12,9 @@ function RecordingPrompt({
   className,
 }: RecordingPromptProps) {
   return (
-    <header
-      className={cn(
-        "flex w-[335px] max-w-full flex-col gap-2 font-['Pretendard',sans-serif] leading-[1.3] wrap-break-word",
-        className,
-      )}
-    >
-      <p className="text-sm leading-[1.3] font-medium text-[#767676]">{message}</p>
-      <h1 className="text-2xl leading-[1.3] font-semibold text-[#0a0a0a]">{topic}</h1>
+    <header className={cn('flex w-[335px] max-w-full flex-col gap-2 wrap-break-word', className)}>
+      <p className="text-body-medium-m text-gray-500">{message}</p>
+      <h1 className="text-title-semibold-l text-gray-900">{topic}</h1>
     </header>
   );
 }

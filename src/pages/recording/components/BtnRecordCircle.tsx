@@ -13,11 +13,11 @@ function BtnRecordCircle({ className, type = 'button', ...props }: BtnRecordCirc
       {...props}
       type={type}
       className={cn(
-        'inline-flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#ebffde] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#52733c] disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-primary-green-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900 disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
     >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#52733c]">
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-green-900">
         <img src={microphoneIcon} alt="" width={48} height={48} />
       </span>
     </button>

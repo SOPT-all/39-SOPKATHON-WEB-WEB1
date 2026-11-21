@@ -14,7 +14,7 @@ function RecordingTranscript({ text, className }: RecordingTranscriptProps) {
   return (
     <div
       className={cn(
-        "flex w-full flex-col gap-6 text-right font-['Pretendard',sans-serif] text-lg leading-[1.3] font-semibold wrap-break-word whitespace-pre-wrap text-[#81b261]",
+        'flex w-full flex-col gap-6 text-right text-title-semibold-s wrap-break-word whitespace-pre-wrap text-primary-green-700',
         className,
       )}
     >

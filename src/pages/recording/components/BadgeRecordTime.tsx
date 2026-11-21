@@ -17,7 +17,7 @@ function BadgeRecordTime({ elapsedSeconds, isRecording = true, className }: Badg
       role="timer"
       aria-label={`${isRecording ? '녹음 중' : '녹음 정지'} ${Math.floor(seconds / 60)}분 ${seconds % 60}초`}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center gap-2.5 overflow-hidden rounded-full bg-[#767676] px-3 py-1',
+        'inline-flex shrink-0 items-center justify-center gap-2.5 overflow-hidden rounded-full bg-gray-500 px-3 py-1',
         className,
       )}
     >
@@ -30,7 +30,7 @@ function BadgeRecordTime({ elapsedSeconds, isRecording = true, className }: Badg
           className="absolute -top-[1.5px] -left-[1.5px]"
         />
       </span>
-      <span className="font-['Pretendard',sans-serif] text-xs leading-[1.3] font-medium whitespace-nowrap text-[#fafafa]">
+      <span className="text-body-medium-s whitespace-nowrap text-gray-50">
         {isRecording ? '녹음 중' : '녹음 정지'} · {minutesText}:{secondsText}
       </span>
     </div>
