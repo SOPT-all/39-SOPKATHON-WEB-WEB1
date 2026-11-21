@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import StoryDetailSummary from '@/pages/world-detail/components/StoryDetailSummary';
+import StoryStartBar from '@/pages/world-detail/components/StoryStartBar';
 import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
-import Button from '@/shared/components/Button';
+import Card from '@/shared/components/Card';
 import Header from '@/shared/components/header';
-import Tag from '@/shared/components/Tag';
 import { SAMPLE_STORIES } from '@/shared/constants/sampleStories';
 
 const WorldDetailPage = () => {
@@ -32,22 +33,28 @@ const WorldDetailPage = () => {
                 />
               </div>
             </div>
-            <div className="space-y-2 px-5 py-5">
-              <Tag variant="metadata">{story.genre}</Tag>
-              <h1 className="text-title-semibold-l">{story.title}</h1>
-              <p className="text-body-regular-m text-gray-500">{story.author}</p>
-              <p className="text-body-medium-l">{story.description}</p>
+            <div className="px-5 py-5">
+              <StoryDetailSummary
+                genre={story.genre}
+                setting={story.setting}
+                title={story.title}
+                author={story.author}
+                description={story.description}
+              />
+              <Card
+                variant="storyRoles"
+                title="이야기 속 역할"
+                entries={[
+                  { label: '등장인물', description: story.characters },
+                  { label: '이야기 속 내 역할', description: story.readerRole },
+                ]}
+              />
             </div>
-            <div className="sticky bottom-0 mt-auto bg-white px-5 pt-2.5 pb-5">
-              <Button
-                variant="confirm"
-                onClick={() => {
-                  void navigate(`/stories/${story.id}`, { state: { worldTitle: story.title } });
-                }}
-              >
-                이야기 시작하기
-              </Button>
-            </div>
+            <StoryStartBar
+              onStart={() => {
+                void navigate(`/stories/${story.id}`, { state: { worldTitle: story.title } });
+              }}
+            />
           </>
         ) : (
           <h1 className="p-5 text-title-semibold-m">세계관을 찾을 수 없어요.</h1>

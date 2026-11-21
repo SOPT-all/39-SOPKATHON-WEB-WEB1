@@ -4,6 +4,9 @@ export const SAMPLE_STORIES = [
     title: '별빛을 나르는 밤기차',
     author: '강다은',
     genre: '판타지',
+    setting: '별빛이 사라진 밤',
+    characters: '밤기차의 차장과 별빛을 모으는 승객들',
+    readerRole: '별빛을 찾아 나선 밤기차의 새 승객',
     description: '한밤중에 나타난 기차를 타고, 잃어버린 별빛을 찾아 떠나요.',
   },
   {
@@ -11,6 +14,9 @@ export const SAMPLE_STORIES = [
     title: '교실에 남겨진 쪽지',
     author: '김하늘',
     genre: '미스터리',
+    setting: '방과 후 교실',
+    characters: '쪽지를 발견한 친구와 단서를 남긴 학생',
+    readerRole: '친구와 함께 쪽지의 비밀을 풀어가는 탐정',
     description: '아무도 없는 교실에서 발견한 쪽지에 적힌 단서를 따라가요.',
   },
   {
@@ -18,6 +24,9 @@ export const SAMPLE_STORIES = [
     title: '바람이 그린 지도',
     author: '이바다',
     genre: '모험',
+    setting: '지도 속 숨겨진 섬',
+    characters: '낡은 지도를 발견한 친구들과 섬의 안내인',
+    readerRole: '지도를 읽고 탐험대를 이끄는 길잡이',
     description: '낡은 지도 한 장을 들고 친구들과 숨겨진 섬을 찾아 나서요.',
   },
 ] as const;
