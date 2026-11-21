@@ -1,0 +1,123 @@
+name: PR Preview
+
+on:
+  pull_request:
+    branches: [dev, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Preview Deploy
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      HUSKY: '0'
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Check Vercel configuration
+        run: |
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name Secret을 등록해 주세요."
+              exit 1
+            fi
+          done
+
+      - name: Checkout PR commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: '11.11.0'
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel
+
+      - name: Pull Preview settings
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+
+      - name: Build Preview
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy Preview
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Update Preview comment
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const { data: current } = await github.rest.pulls.get({
+              owner, repo, pull_number: pr.number
+            });
+            if (current.state !== 'open' || current.head.sha !== pr.head.sha) {
+              core.info('PR이 닫혔거나 새 커밋이 있어 댓글 갱신을 건너뜁니다.');
+              return;
+            }
+
+            const url = new URL(process.env.PREVIEW_URL);
+            if (url.protocol !== 'https:') {
+              throw new Error('올바른 HTTPS 프리뷰 주소가 아닙니다.');
+            }
+            const marker = '<!-- pr-vercel-preview -->';
+            const body = [
+              marker,
+              '## 🔍 미리보기 배포 완료',
+              '',
+              '| 항목 | 내용 |',
+              '| --- | --- |',
+              `| 미리보기 | ${url.href} |`,
+              `| 커밋 | \`${pr.head.sha.slice(0, 7)}\` |`,
+              '',
+              '새 커밋을 push하면 배포 완료 후 이 댓글의 주소가 갱신됩니다.',
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: pr.number, per_page: 100
+            });
+            const existing = comments.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body?.includes(marker)
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: pr.number, body
+              });
+            }
