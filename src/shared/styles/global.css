@@ -13,14 +13,17 @@
   }
 
   body {
-    min-width: 320px;
+    min-width: 375px;
     min-height: 100dvh;
     margin: 0;
-    background-color: #fff;
+    background-color: #ececec;
     color: #000;
   }
 
   #root {
+    width: 375px;
     min-height: 100dvh;
+    margin-inline: auto;
+    background-color: #fff;
   }
 }
