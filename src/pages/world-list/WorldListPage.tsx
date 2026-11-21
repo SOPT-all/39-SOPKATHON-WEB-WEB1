@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import CarouselCard from '@/pages/world-list/components/CarouselCard';
 import StoryListCard from '@/pages/world-list/components/StoryListCard';
 import StoryListItem from '@/pages/world-list/components/StoryListItem';
+import { useHorizontalDrag } from '@/pages/world-list/hooks/useHorizontalDrag';
 import chevronRight from '@/shared/assets/svg/icon-chevron-right.svg';
 import Header from '@/shared/components/header';
 import Tag from '@/shared/components/Tag';
@@ -12,6 +13,7 @@ const GENRES = ['전체', '미스터리', '모험', '판타지'] as const;
 const WorldListPage = () => {
   const [genre, setGenre] = useState<(typeof GENRES)[number]>('전체');
   const genreListRef = useRef<HTMLUListElement>(null);
+  const dragHandlers = useHorizontalDrag<HTMLUListElement>();
   const visibleStories = SAMPLE_STORIES.filter(
     (story) => genre === '전체' || story.genre === genre,
   );
@@ -50,10 +52,11 @@ const WorldListPage = () => {
             ))}
           </div>
           <ul
+            {...dragHandlers}
             ref={genreListRef}
             aria-labelledby="browse-worlds"
             tabIndex={0}
-            className="flex [scrollbar-width:none] gap-2 overflow-x-auto pr-5"
+            className="flex [scrollbar-width:none] gap-2 overflow-x-auto pr-5 select-none data-[dragging=true]:cursor-grabbing"
           >
             {visibleStories.map(({ id, title, author }) => (
               <StoryListItem
