@@ -20,7 +20,7 @@ function ChatHeader({ title, onBack }: ChatHeaderProps) {
           className="absolute top-1/2 left-[calc(50%-4px)] size-6 -translate-x-1/2 -translate-y-1/2"
         />
       </button>
-      <h1 className="min-w-0 flex-1 truncate font-[Pretendard] text-[20px] leading-[1.3] font-semibold text-[#191f28]">
+      <h1 className="min-w-0 flex-1 truncate font-pretendard text-[20px] leading-[1.3] font-semibold text-[#191f28]">
         {title}
       </h1>
     </header>

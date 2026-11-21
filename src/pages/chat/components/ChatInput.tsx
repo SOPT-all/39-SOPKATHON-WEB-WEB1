@@ -54,7 +54,7 @@ function ChatInput({ value, onChange, onSubmit, isRewrite, disabled }: ChatInput
               isRewrite ? '고친 문장을 다시 입력해 줘!' : '네 생각을 구체적으로 적어 봐!'
             }
             className={cn(
-              "min-w-0 flex-1 bg-transparent py-[14px] font-['Noto_Sans_KR'] text-[14px] leading-[1.3] tracking-[-0.3px] text-[#0a0a0a] caret-[#004ac6] outline-none",
+              'min-w-0 flex-1 bg-transparent py-[14px] font-noto text-[14px] leading-[1.3] tracking-[-0.3px] text-[#0a0a0a] caret-[#004ac6] outline-none',
               isRewrite ? 'placeholder:text-[#0a0a0a]' : 'placeholder:text-[#767676]',
             )}
           />
