@@ -26,14 +26,14 @@ function HomePage() {
   return (
     <main
       lang="ko"
-      className="relative flex min-h-dvh flex-col justify-between gap-8 px-5 pt-[160px] pb-10 font-pretendard leading-[1.3] text-[#0a0a0a]"
+      className="relative flex min-h-dvh flex-col justify-between gap-8 px-5 pt-[160px] pb-10 text-gray-900"
     >
       <div className="space-y-4">
-        <h1 className="text-[36px] font-semibold">
+        <h1 className="text-heading-semibold-s">
           오늘은 <br />
           무엇을 하고 싶나요?
         </h1>
-        <p className="text-xl/[1.3] font-medium text-[#767676]">
+        <p className="text-title-medium-m text-gray-500">
           두 가지 방법으로 이야기를 <br />
           시작할 수 있어요.
         </p>
@@ -53,7 +53,10 @@ function HomePage() {
         ))}
       </ul>
 
-      <p role="status" className="absolute right-5 bottom-2 left-5 text-sm text-[#575757]">
+      <p
+        role="status"
+        className="absolute right-5 bottom-2 left-5 text-body-regular-m text-gray-600"
+      >
         {status}
       </p>
     </main>

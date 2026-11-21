@@ -14,8 +14,8 @@ function RecordingTooltip({
 }: RecordingTooltipProps) {
   return (
     <div {...props} role="tooltip" className={cn('flex w-fit flex-col items-center', className)}>
-      <div className="flex w-full items-center justify-center rounded-xl bg-[#d6d6d6] px-3 py-2">
-        <p className="max-w-[247px] text-center font-['Pretendard',sans-serif] text-[10px] leading-[1.3] font-medium whitespace-nowrap text-[#292929]">
+      <div className="flex w-full items-center justify-center rounded-xl bg-gray-300 px-3 py-2">
+        <p className="max-w-[247px] text-center text-label-medium-m whitespace-nowrap text-gray-800">
           {children}
         </p>
       </div>

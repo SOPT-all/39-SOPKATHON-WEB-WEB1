@@ -16,12 +16,12 @@ function TextCard({ questions = MOCK_QUESTIONS, className }: TextCardProps) {
     <section
       aria-label="추억을 떠올리는 AI 질문"
       className={cn(
-        "flex w-[335px] max-w-full flex-col gap-4 overflow-hidden rounded-3xl bg-linear-to-b from-[#ebffde] to-white px-5 pt-5 pb-16 font-['Pretendard',sans-serif] leading-[1.3] font-medium wrap-break-word",
+        'flex w-[335px] max-w-full flex-col gap-4 overflow-hidden rounded-3xl bg-linear-to-b from-primary-green-50 to-white px-5 pt-5 pb-16 wrap-break-word',
         className,
       )}
     >
-      <h2 className="text-xs leading-[1.3] text-[#767676]">어떤 추억이 떠오르시나요?</h2>
-      <ul className="flex flex-col gap-2 text-base leading-[1.3] text-[#434343]">
+      <h2 className="text-body-medium-s text-gray-500">어떤 추억이 떠오르시나요?</h2>
+      <ul className="flex flex-col gap-2 text-body-medium-l text-gray-700">
         {questions.map((question) => (
           <li key={question}>· {question}</li>
         ))}

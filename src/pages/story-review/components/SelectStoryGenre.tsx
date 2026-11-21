@@ -50,7 +50,7 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
         }
       }}
       className={cn(
-        'relative flex w-full flex-col rounded-lg border border-[#e6e6e6] bg-white font-pretendard font-medium text-[#0a0a0a]',
+        'relative flex w-full flex-col rounded-lg border border-gray-200 bg-white text-gray-900',
         isOpen && 'z-10 rounded-b-none border-b-transparent',
         className,
       )}
@@ -71,7 +71,7 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
             requestAnimationFrame(() => focusOption(Math.max(0, GENRES.indexOf(value))));
           }
         }}
-        className="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-4 text-left text-xs leading-[1.3] focus-visible:outline-2 focus-visible:outline-[#81b261]"
+        className="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-4 text-left text-body-medium-s focus-visible:outline-2 focus-visible:outline-primary-green-700"
       >
         <span>{value}</span>
         <img src={isOpen ? chevronUp : chevronDown} alt="" width={20} height={20} />
@@ -81,7 +81,7 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
           id={listId}
           role="listbox"
           aria-label="카테고리"
-          className="absolute top-full -right-px -left-px z-10 flex flex-col gap-2 rounded-b-lg border border-t-0 border-[#e6e6e6] bg-white px-4 pt-1 pb-4"
+          className="absolute top-full -right-px -left-px z-10 flex flex-col gap-2 rounded-b-lg border border-t-0 border-gray-200 bg-white px-4 pt-1 pb-4"
         >
           {GENRES.map((genre, index) => (
             <button
@@ -110,7 +110,7 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
                   );
                 }
               }}
-              className="w-full cursor-pointer rounded-sm text-left text-[10px] leading-[1.3] focus-visible:bg-[#ebffde] focus-visible:outline-2 focus-visible:outline-[#81b261]"
+              className="w-full cursor-pointer rounded-sm text-left text-label-medium-m focus-visible:bg-primary-green-50 focus-visible:outline-2 focus-visible:outline-primary-green-700"
             >
               {genre}
             </button>
