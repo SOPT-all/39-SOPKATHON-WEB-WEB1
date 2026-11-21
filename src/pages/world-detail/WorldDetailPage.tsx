@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import StoryDetailSummary from '@/pages/world-detail/components/StoryDetailSummary';
 import StoryStartBar from '@/pages/world-detail/components/StoryStartBar';
 import { getStory, STORY_CATEGORIES } from '@/shared/apis/stories';
+import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
 import Card from '@/shared/components/Card';
 import Header from '@/shared/components/header';
 import { cn } from '@/shared/utils/cn';
@@ -53,18 +54,19 @@ const WorldDetailPage = () => {
       <main lang="ko" className="flex min-h-[calc(100dvh-44px)] flex-col">
         {story ? (
           <>
-            {story.imageUrl && (
-              <div className="flex justify-center bg-gray-400 px-5 pt-11 pb-16">
-                <img
-                  src={story.imageUrl}
-                  alt=""
-                  width={191}
-                  height={279}
-                  className="h-[279px] w-[191px] rounded-2xl object-cover shadow-md"
-                />
-              </div>
-            )}
-            <div className={cn('bg-white px-5 py-5', story.imageUrl && '-mt-5 rounded-t-2xl')}>
+            <div className="flex justify-center bg-gray-400 px-5 pt-11 pb-16">
+              <img
+                src={story.imageUrl || coverPlaceholder}
+                alt=""
+                width={191}
+                height={279}
+                className={cn(
+                  'h-[279px] w-[191px] rounded-2xl shadow-md',
+                  story.imageUrl ? 'object-cover' : 'bg-gray-200 object-contain',
+                )}
+              />
+            </div>
+            <div className="-mt-5 rounded-t-2xl bg-white px-5 py-5">
               <StoryDetailSummary
                 genre={STORY_CATEGORIES[story.category] ?? story.category}
                 setting={story.setting}

@@ -47,8 +47,6 @@ const WorldListPage = () => {
   }
 
   const visibleStories = stories.filter((story) => genre === 'ALL' || story.category === genre);
-  const visibleCovers = visibleStories.filter((story) => Boolean(story.imageUrl));
-  const visibleTextStories = visibleStories.filter((story) => !story.imageUrl);
   const storiesWithCovers = stories.filter((story): story is typeof story & { imageUrl: string } =>
     Boolean(story.imageUrl),
   );
@@ -90,7 +88,7 @@ const WorldListPage = () => {
               </Tag>
             ))}
           </div>
-          {visibleCovers.length > 0 && (
+          {visibleStories.length > 0 ? (
             <ul
               {...dragHandlers}
               ref={genreListRef}
@@ -98,7 +96,7 @@ const WorldListPage = () => {
               tabIndex={0}
               className="flex [scrollbar-width:none] gap-2 overflow-x-auto pr-5 select-none data-[dragging=true]:cursor-grabbing"
             >
-              {visibleCovers.map(({ storyId, title, imageUrl }) => (
+              {visibleStories.map(({ storyId, title, imageUrl }) => (
                 <StoryListItem
                   key={storyId}
                   title={title}
@@ -108,20 +106,7 @@ const WorldListPage = () => {
                 />
               ))}
             </ul>
-          )}
-          {visibleTextStories.length > 0 && (
-            <ul aria-label="표지 없는 세계관" className="space-y-2 pr-5">
-              {visibleTextStories.map(({ storyId, title, summary }) => (
-                <StoryListCard
-                  key={storyId}
-                  title={title}
-                  description={summary}
-                  to={`/worlds/${storyId}`}
-                />
-              ))}
-            </ul>
-          )}
-          {visibleStories.length === 0 && (
+          ) : (
             <p role="status" className="pr-5 text-body-regular-m text-gray-500">
               아직 등록된 이야기가 없어요.
             </p>
