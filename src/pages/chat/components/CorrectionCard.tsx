@@ -52,7 +52,7 @@ function CorrectionCard({ correction }: CorrectionCardProps) {
       <h2 className="flex h-10 items-center justify-center rounded-t-2xl border border-primary-green-500 bg-primary-green-500 font-noto text-body-regular-m tracking-[-0.3px] text-gray-900">
         문장을 조금만 고쳐 볼까?
       </h2>
-      <div className="rounded-b-2xl border-x border-b border-primary-green-200 bg-gray-50 px-3 pt-1 pb-3 font-pretendard text-body-regular-s text-gray-600">
+      <div className="rounded-b-2xl border-x border-b border-primary-green-200 bg-gray-50 px-3 py-3 font-pretendard text-body-regular-s text-gray-600">
         <p>
           {hasSpelling && <SpellingSentence spellings={spellings} />}
           {hasSpelling && suggestion && <br />}
