@@ -68,9 +68,12 @@ const WorldListPage = () => {
         </section>
 
         <section aria-labelledby="popular-worlds" className="space-y-4 px-5">
-          <h2 id="popular-worlds" className="text-title-semibold-m">
-            인기 세계관
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 id="popular-worlds" className="text-title-semibold-m">
+              인기 세계관
+            </h2>
+            <img src={chevronRight} alt="" width={24} height={24} />
+          </div>
           <ul className="space-y-2">
             {SAMPLE_STORIES.slice(0, 2).map(({ id, title, description }) => (
               <StoryListCard
