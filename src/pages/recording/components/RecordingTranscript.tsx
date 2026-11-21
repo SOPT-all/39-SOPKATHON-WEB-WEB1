@@ -2,10 +2,11 @@ import { cn } from '@/shared/utils/cn';
 
 type RecordingTranscriptProps = {
   text: string;
+  interimText?: string;
   className?: string;
 };
 
-function RecordingTranscript({ text, className }: RecordingTranscriptProps) {
+function RecordingTranscript({ text, interimText = '', className }: RecordingTranscriptProps) {
   const paragraphs = text
     .split(/\r?\n\s*\r?\n/)
     .map((paragraph) => paragraph.trim())
@@ -21,6 +22,11 @@ function RecordingTranscript({ text, className }: RecordingTranscriptProps) {
       {paragraphs.map((paragraph, index) => (
         <p key={index}>{paragraph}</p>
       ))}
+      {interimText && (
+        <p aria-label="인식 중인 내용" className="opacity-60">
+          {interimText}
+        </p>
+      )}
     </div>
   );
 }

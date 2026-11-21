@@ -7,11 +7,18 @@ const MOCK_QUESTIONS = [
 ];
 
 type TextCardProps = {
+  title?: string;
   questions?: readonly string[];
+  showBullets?: boolean;
   className?: string;
 };
 
-function TextCard({ questions = MOCK_QUESTIONS, className }: TextCardProps) {
+function TextCard({
+  title = '어떤 추억이 떠오르시나요?',
+  questions = MOCK_QUESTIONS,
+  showBullets = true,
+  className,
+}: TextCardProps) {
   return (
     <section
       aria-label="추억을 떠올리는 AI 질문"
@@ -20,10 +27,13 @@ function TextCard({ questions = MOCK_QUESTIONS, className }: TextCardProps) {
         className,
       )}
     >
-      <h2 className="text-body-medium-s text-gray-500">어떤 추억이 떠오르시나요?</h2>
+      <h2 className="text-body-medium-s text-gray-500">{title}</h2>
       <ul className="flex flex-col gap-2 text-body-medium-l text-gray-700">
         {questions.map((question) => (
-          <li key={question}>· {question}</li>
+          <li key={question}>
+            {showBullets ? '· ' : ''}
+            {question}
+          </li>
         ))}
       </ul>
     </section>
