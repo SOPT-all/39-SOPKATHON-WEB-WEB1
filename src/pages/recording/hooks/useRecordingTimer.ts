@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function useRecordingTimer() {
-  const [isRecording, setIsRecording] = useState(false);
+function useRecordingTimer(isRecording: boolean) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
@@ -20,16 +19,9 @@ function useRecordingTimer() {
     return () => window.clearInterval(intervalId);
   }, [isRecording]);
 
-  const toggleRecording = () => {
-    setIsRecording((previous) => !previous);
-  };
+  const resetTimer = () => setElapsedSeconds(0);
 
-  const resetTimer = () => {
-    setIsRecording(false);
-    setElapsedSeconds(0);
-  };
-
-  return { isRecording, elapsedSeconds, toggleRecording, resetTimer };
+  return { elapsedSeconds, resetTimer };
 }
 
 export default useRecordingTimer;

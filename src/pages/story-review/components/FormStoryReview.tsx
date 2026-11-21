@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
 import type { StoryReview } from '@/pages/story-review/types/storyReview';
-import editIcon from '@/shared/assets/svg/icon-story-edit.svg';
+import editIcon from '@/shared/assets/svg/icon-story-field-edit.svg';
 import SelectStoryGenre from '@/pages/story-review/components/SelectStoryGenre';
 import Button from '@/shared/components/Button';
 import { cn } from '@/shared/utils/cn';
@@ -47,37 +47,25 @@ function FormStoryReview(props: FormStoryReviewProps) {
               <div className="relative">
                 {key === 'category' ? (
                   <SelectStoryGenre
+                    variant="story-field"
                     id={`${id}-${key}`}
                     value={story.category}
                     onChange={(category) => props.onChange({ ...story, category })}
                   />
                 ) : (
-                  <div className="flex min-h-[42px] items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-3 focus-within:outline-2 focus-within:outline-primary-green-700">
-                    {key === 'plot' ? (
-                      <textarea
-                        id={`${id}-${key}`}
-                        value={story[key]}
-                        onChange={(event) =>
-                          props.onChange({ ...story, [key]: event.target.value })
-                        }
-                        rows={4}
-                        className="block [field-sizing:content] min-h-16 w-[240px] min-w-0 shrink resize-none bg-transparent text-body-medium-s outline-none"
-                      />
-                    ) : (
-                      <input
-                        id={`${id}-${key}`}
-                        value={story[key]}
-                        onChange={(event) =>
-                          props.onChange({ ...story, [key]: event.target.value })
-                        }
-                        className="h-4 w-[240px] min-w-0 shrink bg-transparent text-body-medium-s outline-none"
-                      />
-                    )}
+                  <div className="flex items-center justify-between rounded-[10px] border border-gray-200 bg-white px-3.5 py-2.5 focus-within:outline-2 focus-within:outline-primary-green-700">
+                    <textarea
+                      id={`${id}-${key}`}
+                      value={story[key]}
+                      onChange={(event) => props.onChange({ ...story, [key]: event.target.value })}
+                      rows={1}
+                      className="block [field-sizing:content] min-h-4 min-w-0 flex-1 resize-none bg-transparent text-body-medium-s wrap-break-word outline-none"
+                    />
                     <img
                       src={editIcon}
                       alt=""
-                      width={13}
-                      height={13}
+                      width={24}
+                      height={24}
                       className="pointer-events-none shrink-0"
                     />
                   </div>

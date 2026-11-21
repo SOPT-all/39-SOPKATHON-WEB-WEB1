@@ -48,7 +48,7 @@ function CorrectionCard({ correction }: CorrectionCardProps) {
   const hasSpelling = spellings.length > 0;
 
   return (
-    <section className="w-[226px]">
+    <section className="w-[274px]">
       <h2 className="flex h-10 items-center justify-center rounded-t-2xl border border-[#a9df86] bg-[#a9df86] font-noto text-[14px] leading-[1.3] tracking-[-0.3px] text-[#0a0a0a]">
         문장을 조금만 고쳐 볼까?
       </h2>

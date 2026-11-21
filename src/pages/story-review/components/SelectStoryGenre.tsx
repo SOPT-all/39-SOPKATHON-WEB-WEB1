@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 
 import chevronDown from '@/shared/assets/svg/icon-story-chevron-down.svg';
 import chevronUp from '@/shared/assets/svg/icon-story-chevron-up.svg';
+import editIcon from '@/shared/assets/svg/icon-story-field-edit.svg';
 import { cn } from '@/shared/utils/cn';
 
 const GENRES = ['공포', '로맨스', '스릴러', '액션', '판타지', '기타'];
@@ -11,9 +12,17 @@ type SelectStoryGenreProps = {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  variant?: 'default' | 'story-field';
 };
 
-function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenreProps) {
+function SelectStoryGenre({
+  id,
+  value,
+  onChange,
+  className,
+  variant = 'default',
+}: SelectStoryGenreProps) {
+  const isStoryField = variant === 'story-field';
   const listId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -51,6 +60,7 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
       }}
       className={cn(
         'relative flex w-full flex-col rounded-lg border border-gray-200 bg-white text-gray-900',
+        isStoryField && 'rounded-[10px]',
         isOpen && 'z-10 rounded-b-none border-b-transparent',
         className,
       )}
@@ -71,10 +81,19 @@ function SelectStoryGenre({ id, value, onChange, className }: SelectStoryGenrePr
             requestAnimationFrame(() => focusOption(Math.max(0, GENRES.indexOf(value))));
           }
         }}
-        className="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-4 text-left text-body-medium-s focus-visible:outline-2 focus-visible:outline-primary-green-700"
+        className={cn(
+          'flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-4 text-left text-body-medium-s focus-visible:outline-2 focus-visible:outline-primary-green-700',
+          isStoryField && 'h-auto rounded-[10px] px-3.5 py-2.5',
+        )}
       >
         <span>{value}</span>
-        <img src={isOpen ? chevronUp : chevronDown} alt="" width={20} height={20} />
+        <img
+          src={isStoryField ? editIcon : isOpen ? chevronUp : chevronDown}
+          alt=""
+          width={isStoryField ? 24 : 20}
+          height={isStoryField ? 24 : 20}
+          className="shrink-0"
+        />
       </button>
       {isOpen && (
         <div

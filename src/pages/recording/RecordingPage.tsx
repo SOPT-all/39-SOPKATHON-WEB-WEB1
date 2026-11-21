@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId } from 'react';
 import { useNavigate } from 'react-router';
 
 import BarRecordControlsBottom from '@/pages/recording/components/BarRecordControlsBottom';
@@ -8,8 +8,10 @@ import RecordingTooltip from '@/pages/recording/components/RecordingTooltip';
 import TextCard from '@/pages/recording/components/TextCard';
 import RecordingTranscript from '@/pages/recording/components/RecordingTranscript';
 import useRecordingTimer from '@/pages/recording/hooks/useRecordingTimer';
+import useMicrophoneRecording from '@/pages/recording/hooks/useMicrophoneRecording';
 import Button from '@/shared/components/Button';
 import Header from '@/shared/components/header';
+import { setRecordedAudio } from '@/shared/utils/recordedAudio';
 
 type RecordingPageProps = {
   transcript?: string;
@@ -18,16 +20,21 @@ type RecordingPageProps = {
 function RecordingPage({ transcript = '' }: RecordingPageProps) {
   const tooltipId = useId();
   const navigate = useNavigate();
-  const [hasStarted, setHasStarted] = useState(false);
-  const { isRecording, elapsedSeconds, toggleRecording } = useRecordingTimer();
+  const { status, error, startRecording, stopRecording } = useMicrophoneRecording();
+  const isRecording = status === 'recording';
+  const hasStarted = isRecording || status === 'stopping';
+  const { elapsedSeconds, resetTimer } = useRecordingTimer(isRecording);
 
   const handleStartRecording = () => {
-    setHasStarted(true);
-    toggleRecording();
+    resetTimer();
+    setRecordedAudio(null);
+    void startRecording();
   };
 
-  const handleStopRecording = () => {
-    toggleRecording();
+  const handleStopRecording = async () => {
+    const audio = await stopRecording();
+    if (!audio) return;
+    setRecordedAudio(audio);
     void navigate('/story-review');
   };
 
@@ -45,6 +52,11 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-[66px] pb-6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-green-700"
       >
         <RecordingPrompt message={hasStarted ? '녹음이 시작됐어요.' : '녹음이 준비됐어요.'} />
+        {error && (
+          <p role="alert" className="mt-4 text-body-medium-m text-gray-700">
+            {error}
+          </p>
+        )}
         {hasStarted && transcript.trim() ? (
           <RecordingTranscript text={transcript} className="mt-6 text-body-medium-l" />
         ) : (
@@ -63,6 +75,8 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
                 'aria-label': '녹음 끝내기',
                 'aria-describedby': tooltipId,
                 onClick: handleStopRecording,
+                disabled: status === 'stopping',
+                'aria-busy': status === 'stopping',
               }}
             />
           </>
@@ -71,9 +85,11 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
             <Button
               variant="confirm"
               onClick={handleStartRecording}
-              className="cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
+              disabled={status === 'requesting'}
+              aria-busy={status === 'requesting'}
+              className="cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900 disabled:cursor-wait disabled:opacity-50"
             >
-              녹음 시작하기
+              {status === 'requesting' ? '마이크 권한 확인 중…' : '녹음 시작하기'}
             </Button>
           </div>
         )}

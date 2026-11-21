@@ -7,13 +7,21 @@ interface ChatBubbleProps {
 
 function ChatBubble({ role, text }: ChatBubbleProps) {
   if (role === 'ai') {
-    return <p className={`${textClassName} text-[#52733c]`}>{text}</p>;
+    return (
+      <div className="flex pr-[10px]">
+        <p
+          className={`${textClassName} min-h-8 max-w-[240px] rounded-2xl bg-gray-100 px-5 py-2 text-gray-900`}
+        >
+          {text}
+        </p>
+      </div>
+    );
   }
 
   return (
     <div className="flex justify-end pl-[10px]">
       <p
-        className={`${textClassName} max-w-[250px] rounded-2xl border border-[#d6d6d6] px-5 py-[7px] text-[#0a0a0a]`}
+        className={`${textClassName} max-w-[250px] rounded-2xl border border-gray-300 px-5 py-[7px] text-gray-900`}
       >
         {text}
       </p>
