@@ -8,6 +8,7 @@ import RecordingTooltip from '@/pages/recording/components/RecordingTooltip';
 import TextCard from '@/pages/recording/components/TextCard';
 import RecordingTranscript from '@/pages/recording/components/RecordingTranscript';
 import useRecordingTimer from '@/pages/recording/hooks/useRecordingTimer';
+import Button from '@/shared/components/Button';
 import Header from '@/shared/components/header';
 
 type RecordingPageProps = {
@@ -67,13 +68,13 @@ function RecordingPage({ transcript = '' }: RecordingPageProps) {
           </>
         ) : (
           <div className="w-full bg-white px-5 pt-2.5 pb-5">
-            <button
-              type="button"
+            <Button
+              variant="confirm"
               onClick={handleStartRecording}
-              className="flex h-14 w-full cursor-pointer items-center justify-center rounded-2xl bg-primary-green-700 p-2.5 text-title-semibold-s text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
+              className="cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
             >
               녹음 시작하기
-            </button>
+            </Button>
           </div>
         )}
       </div>
