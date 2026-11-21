@@ -6,7 +6,7 @@ interface CorrectionCardProps {
 }
 
 function Highlight({ children }: { children: string }) {
-  return <span className="text-[#52733c]">‘{children}’</span>;
+  return <span className="text-primary-green-900">‘{children}’</span>;
 }
 
 // 예: ‘개도’는 ‘걔도’로, ‘있어줄께’는 ‘있어줄게’로 써야 해.
@@ -49,10 +49,10 @@ function CorrectionCard({ correction }: CorrectionCardProps) {
 
   return (
     <section className="w-[274px]">
-      <h2 className="flex h-10 items-center justify-center rounded-t-2xl border border-[#a9df86] bg-[#a9df86] font-noto text-[14px] leading-[1.3] tracking-[-0.3px] text-[#0a0a0a]">
+      <h2 className="flex h-10 items-center justify-center rounded-t-2xl border border-primary-green-500 bg-primary-green-500 font-noto text-body-regular-m tracking-[-0.3px] text-gray-900">
         문장을 조금만 고쳐 볼까?
       </h2>
-      <div className="rounded-b-2xl border-x border-b border-[#cbf6af] bg-[#fafafa] px-3 pt-1 pb-3 font-pretendard text-[12px] leading-[1.3] text-[#575757]">
+      <div className="rounded-b-2xl border-x border-b border-primary-green-200 bg-gray-50 px-3 pt-1 pb-3 font-pretendard text-body-regular-s text-gray-600">
         <p>
           {hasSpelling && <SpellingSentence spellings={spellings} />}
           {hasSpelling && suggestion && <br />}
