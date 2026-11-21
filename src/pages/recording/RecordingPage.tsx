@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import BarRecordControlsBottom from '@/pages/recording/components/BarRecordControlsBottom';
-import BgRecordingCircles from '@/pages/recording/components/BgRecordingCircles';
+import BgRecordingCircles from '@/shared/components/BgRecordingCircles';
 import RecordingPrompt from '@/pages/recording/components/RecordingPrompt';
 import RecordingTooltip from '@/pages/recording/components/RecordingTooltip';
 import TextCard from '@/pages/recording/components/TextCard';
