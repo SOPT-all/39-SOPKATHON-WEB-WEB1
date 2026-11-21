@@ -1,13 +1,13 @@
 import recordingIndicator from '@/shared/assets/svg/icon-recording-indicator.svg';
 import { cn } from '@/shared/utils/cn';
 
-type RecordingTimerProps = {
+type BadgeRecordTimeProps = {
   elapsedSeconds: number;
   isRecording?: boolean;
   className?: string;
 };
 
-function RecordingTimer({ elapsedSeconds, isRecording = true, className }: RecordingTimerProps) {
+function BadgeRecordTime({ elapsedSeconds, isRecording = true, className }: BadgeRecordTimeProps) {
   const seconds = Number.isFinite(elapsedSeconds) ? Math.max(0, Math.floor(elapsedSeconds)) : 0;
   const minutesText = String(Math.floor(seconds / 60)).padStart(2, '0');
   const secondsText = String(seconds % 60).padStart(2, '0');
@@ -37,4 +37,4 @@ function RecordingTimer({ elapsedSeconds, isRecording = true, className }: Recor
   );
 }
 
-export default RecordingTimer;
+export default BadgeRecordTime;

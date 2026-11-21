@@ -6,15 +6,12 @@ const MOCK_QUESTIONS = [
   '친구들과 벌였던 잊지 못할 승부가 있나요?',
 ];
 
-type RecordingQuestionCardProps = {
+type TextCardProps = {
   questions?: readonly string[];
   className?: string;
 };
 
-function RecordingQuestionCard({
-  questions = MOCK_QUESTIONS,
-  className,
-}: RecordingQuestionCardProps) {
+function TextCard({ questions = MOCK_QUESTIONS, className }: TextCardProps) {
   return (
     <section
       aria-label="추억을 떠올리는 AI 질문"
@@ -33,4 +30,4 @@ function RecordingQuestionCard({
   );
 }
 
-export default RecordingQuestionCard;
+export default TextCard;

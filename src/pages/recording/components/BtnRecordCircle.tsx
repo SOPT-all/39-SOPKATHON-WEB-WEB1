@@ -3,11 +3,11 @@ import type { ComponentPropsWithoutRef } from 'react';
 import microphoneIcon from '@/shared/assets/svg/icon-microphone-recording.svg';
 import { cn } from '@/shared/utils/cn';
 
-type RecordingButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> & {
+type BtnRecordCircleProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> & {
   'aria-label': string;
 };
 
-function RecordingButton({ className, type = 'button', ...props }: RecordingButtonProps) {
+function BtnRecordCircle({ className, type = 'button', ...props }: BtnRecordCircleProps) {
   return (
     <button
       {...props}
@@ -24,4 +24,4 @@ function RecordingButton({ className, type = 'button', ...props }: RecordingButt
   );
 }
 
-export default RecordingButton;
+export default BtnRecordCircle;

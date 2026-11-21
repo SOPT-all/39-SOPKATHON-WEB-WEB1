@@ -1,5 +1,5 @@
 import RecordingPrompt from '@/pages/recording/components/RecordingPrompt';
-import RecordingQuestionCard from '@/pages/recording/components/RecordingQuestionCard';
+import TextCard from '@/pages/recording/components/TextCard';
 import RecordingTranscript from '@/pages/recording/components/RecordingTranscript';
 
 const MOCK_TRANSCRIPT =
@@ -10,7 +10,7 @@ function RecordingPage() {
     <main className="flex min-h-dvh flex-col items-center gap-8 px-5 py-10">
       <RecordingPrompt />
       <RecordingTranscript text={MOCK_TRANSCRIPT} />
-      <RecordingQuestionCard />
+      <TextCard />
     </main>
   );
 }

@@ -1,11 +1,11 @@
 import recordingBackground from '@/shared/assets/svg/img-recording-background.svg';
 import { cn } from '@/shared/utils/cn';
 
-type RecordingBackgroundProps = {
+type BgRecordingCirclesProps = {
   className?: string;
 };
 
-function RecordingBackground({ className }: RecordingBackgroundProps) {
+function BgRecordingCircles({ className }: BgRecordingCirclesProps) {
   return (
     <div
       aria-hidden="true"
@@ -22,4 +22,4 @@ function RecordingBackground({ className }: RecordingBackgroundProps) {
   );
 }
 
-export default RecordingBackground;
+export default BgRecordingCircles;
