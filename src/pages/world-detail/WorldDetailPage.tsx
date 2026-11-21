@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
+import Button from '@/shared/components/Button';
 import Header from '@/shared/components/header';
 import Tag from '@/shared/components/Tag';
 import { SAMPLE_STORIES } from '@/shared/constants/sampleStories';
 
 const WorldDetailPage = () => {
   const { worldId } = useParams();
+  const navigate = useNavigate();
   const story = SAMPLE_STORIES.find(({ id }) => id === worldId);
 
   useEffect(() => {
@@ -16,7 +18,7 @@ const WorldDetailPage = () => {
   return (
     <>
       <Header variant="brand_title" backTo="/worlds" />
-      <main lang="ko">
+      <main lang="ko" className="flex min-h-[calc(100dvh-44px)] flex-col">
         {story ? (
           <>
             <div className="flex justify-center bg-gray-100 px-5 py-11">
@@ -35,6 +37,16 @@ const WorldDetailPage = () => {
               <h1 className="text-title-semibold-l">{story.title}</h1>
               <p className="text-body-regular-m text-gray-500">{story.author}</p>
               <p className="text-body-medium-l">{story.description}</p>
+            </div>
+            <div className="sticky bottom-0 mt-auto bg-white px-5 pt-2.5 pb-5">
+              <Button
+                variant="confirm"
+                onClick={() => {
+                  void navigate(`/stories/${story.id}`, { state: { worldTitle: story.title } });
+                }}
+              >
+                이야기 시작하기
+              </Button>
             </div>
           </>
         ) : (
