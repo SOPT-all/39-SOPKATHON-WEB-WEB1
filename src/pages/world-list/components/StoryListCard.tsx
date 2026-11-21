@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
 import { cn } from '@/shared/utils/cn';
 
 interface StoryListCardProps {
@@ -14,16 +13,16 @@ const StoryListCard = ({ title, description, coverUrl, to, className }: StoryLis
   const layout = 'flex gap-2';
   const content = (
     <>
-      <div className="size-20 shrink-0 bg-[#e3e3e3]">
+      {coverUrl && (
         <img
-          src={coverUrl || coverPlaceholder}
+          src={coverUrl}
           alt=""
           width={80}
           height={80}
-          className={cn('size-full', coverUrl ? 'object-cover' : 'object-contain opacity-20')}
+          className="size-20 shrink-0 object-cover"
         />
-      </div>
-      <div className="flex max-w-[218px] min-w-0 flex-1 flex-col gap-1">
+      )}
+      <div className={cn('flex min-w-0 flex-1 flex-col gap-1', coverUrl && 'max-w-[218px]')}>
         <p className="truncate text-body-medium-l text-gray-900">{title}</p>
         <p className="line-clamp-3 text-body-regular-m text-gray-500">{description}</p>
       </div>

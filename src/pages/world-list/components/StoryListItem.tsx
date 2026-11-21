@@ -1,10 +1,9 @@
 import { Link } from 'react-router';
-import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
 import { cn } from '@/shared/utils/cn';
 
 interface StoryListItemProps {
   title: string;
-  author: string;
+  author?: string;
   coverUrl?: string;
   to?: string;
   className?: string;
@@ -14,18 +13,18 @@ const StoryListItem = ({ title, author, coverUrl, to, className }: StoryListItem
   const layout = 'flex flex-col gap-1';
   const content = (
     <>
-      <div className="aspect-[2/3] w-full bg-[#e3e3e3]">
+      {coverUrl && (
         <img
-          src={coverUrl || coverPlaceholder}
+          src={coverUrl}
           alt=""
           width={140}
           height={210}
-          className={cn('size-full', coverUrl ? 'object-cover' : 'object-contain opacity-20')}
+          className="aspect-[2/3] w-full object-cover"
         />
-      </div>
+      )}
       <div className="flex flex-col gap-0.5">
         <p className="truncate text-body-medium-l text-gray-900">{title}</p>
-        <p className="truncate text-body-regular-m text-gray-500">{author}</p>
+        {author && <p className="truncate text-body-regular-m text-gray-500">{author}</p>}
       </div>
     </>
   );
