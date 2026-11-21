@@ -43,7 +43,7 @@ function ChatPage() {
           !story && 'pt-5',
         )}
       >
-        {story && <ChatGuide text={story.setting} />}
+        {story && <ChatGuide text={story.summary} />}
 
         <div className="flex flex-col gap-[14px] px-5">
           {messages.map((message) =>
