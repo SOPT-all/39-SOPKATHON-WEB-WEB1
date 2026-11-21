@@ -1,0 +1,50 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: ${{ matrix.check }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      # 한 검사가 실패해도 다른 검사는 끝까지 실행합니다.
+      fail-fast: false
+      matrix:
+        check: [lint, build]
+    env:
+      HUSKY: '0'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: '11.11.0'
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 실패 상태는 유지합니다. 머지 허용 여부는 저장소의 필수 검사 설정에서 관리합니다.
+      - name: Run ${{ matrix.check }}
+        run: pnpm ${{ matrix.check }}
