@@ -17,6 +17,9 @@ const STORY_FIELDS = [
 type FormStoryReviewProps = {
   story: StoryReview;
   className?: string;
+  isPublishing?: boolean;
+  isLocked?: boolean;
+  onSave: () => void;
 } & (
   | { mode?: 'preview'; onEdit: () => void }
   | { mode: 'editing'; onChange: (story: StoryReview) => void; onSave: () => void }
@@ -31,14 +34,14 @@ function FormStoryReview(props: FormStoryReviewProps) {
         aria-label="이야기 내용 수정"
         onSubmit={(event) => {
           event.preventDefault();
-          props.onSave();
+          if (!props.isPublishing) props.onSave();
         }}
         className={cn(
           'flex w-[335px] max-w-full flex-col gap-8 rounded-3xl bg-gray-50 p-5 text-gray-900',
           className,
         )}
       >
-        <div className="flex flex-col gap-3">
+        <fieldset disabled={props.isLocked || props.isPublishing} className="flex flex-col gap-3">
           {STORY_FIELDS.map(({ key, label }) => (
             <div key={key} className="flex flex-col gap-1">
               <label htmlFor={`${id}-${key}`} className="px-1 text-body-medium-l">
@@ -73,13 +76,19 @@ function FormStoryReview(props: FormStoryReviewProps) {
               </div>
             </div>
           ))}
-        </div>
+        </fieldset>
         <Button
           variant="save"
           type="submit"
+          disabled={props.isPublishing}
+          aria-busy={props.isPublishing}
           className="cursor-pointer bg-primary-green-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
         >
-          내용 저장하기
+          {props.isPublishing
+            ? '등록 중…'
+            : props.isLocked
+              ? '등록 결과 다시 확인'
+              : '내용 저장하기'}
         </Button>
       </form>
     );
@@ -107,11 +116,24 @@ function FormStoryReview(props: FormStoryReviewProps) {
         <button
           type="button"
           onClick={props.onEdit}
+          disabled={props.isLocked || props.isPublishing}
           className="cursor-pointer text-body-medium-s text-gray-500 underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-4"
         >
           내용 수정하기
         </button>
       </div>
+      <Button
+        variant="save"
+        onClick={props.onSave}
+        disabled={props.isPublishing}
+        aria-busy={props.isPublishing}
+      >
+        {props.isPublishing
+          ? '등록 중…'
+          : props.isLocked
+            ? '등록 결과 다시 확인'
+            : '이 내용으로 등록하기'}
+      </Button>
     </section>
   );
 }

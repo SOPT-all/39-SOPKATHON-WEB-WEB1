@@ -1,15 +1,46 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 
 import FormStoryReview from '@/pages/story-review/components/FormStoryReview';
-import { MOCK_STORY_REVIEW } from '@/pages/story-review/constants/mockStoryReview';
+import type { StoryReview } from '@/pages/story-review/types/storyReview';
+import { STORY_CATEGORY_LABELS } from '@/shared/types/storyDraft';
+import { getStoryDraft } from '@/shared/utils/storyDraft';
+import useStoryPublication from '@/pages/story-review/hooks/useStoryPublication';
 import Header from '@/shared/components/header';
 
 function StoryReviewPage() {
   const navigate = useNavigate();
-  const [story, setStory] = useState(MOCK_STORY_REVIEW);
-  const [draft, setDraft] = useState(MOCK_STORY_REVIEW);
+  const { publish, isPublishing, isLocked, error } = useStoryPublication();
+  const [generatedDraft] = useState(getStoryDraft);
+  const [story, setStory] = useState<StoryReview>(() => ({
+    title: generatedDraft?.title ?? '',
+    category: generatedDraft ? STORY_CATEGORY_LABELS[generatedDraft.category] : '',
+    setting: generatedDraft?.setting ?? '',
+    characters: generatedDraft?.characters ?? '',
+    plot: generatedDraft?.coreEvent ?? '',
+  }));
+  const [draft, setDraft] = useState(story);
   const [isEditing, setIsEditing] = useState(false);
+
+  if (!generatedDraft) return <Navigate to="/recording" replace />;
+
+  const handlePublish = async (review: StoryReview) => {
+    const category = (
+      Object.keys(STORY_CATEGORY_LABELS) as Array<keyof typeof STORY_CATEGORY_LABELS>
+    ).find((code) => STORY_CATEGORY_LABELS[code] === review.category);
+    if (!category) return;
+    const storyId = await publish({
+      ...generatedDraft,
+      title: review.title,
+      category,
+      setting: review.setting,
+      characters: review.characters,
+      coreEvent: review.plot,
+    });
+    if (storyId === null) return;
+    setStory(review);
+    void navigate('/story-finish', { state: { story: review, storyId }, replace: true });
+  };
 
   return (
     <div className="flex h-dvh flex-col bg-white">
@@ -23,21 +54,32 @@ function StoryReviewPage() {
           </p>
           <h1 className="text-title-semibold-l text-gray-900">세계관 내용을 확인해주세요.</h1>
         </div>
+        {error && (
+          <p role="alert" className="mb-4 text-body-medium-m text-gray-700">
+            {error}
+          </p>
+        )}
+        {isLocked && !isPublishing && (
+          <p role="status" className="mb-4 text-body-medium-m text-gray-500">
+            등록을 요청한 내용으로 다시 확인할 수 있어요.
+          </p>
+        )}
         {isEditing ? (
           <FormStoryReview
             mode="editing"
             story={draft}
             onChange={setDraft}
-            onSave={() => {
-              setStory(draft);
-              setIsEditing(false);
-              void navigate('/story-finish', { state: { story: draft } });
-            }}
+            onSave={() => void handlePublish(draft)}
+            isPublishing={isPublishing}
+            isLocked={isLocked}
             className="self-start"
           />
         ) : (
           <FormStoryReview
             story={story}
+            onSave={() => void handlePublish(story)}
+            isPublishing={isPublishing}
+            isLocked={isLocked}
             onEdit={() => {
               setDraft(story);
               setIsEditing(true);

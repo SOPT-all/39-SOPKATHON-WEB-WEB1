@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useHorizontalDrag } from '@/pages/world-list/hooks/useHorizontalDrag';
-import coverPlaceholder from '@/shared/assets/images/img-story-cover-placeholder.png';
 import { cn } from '@/shared/utils/cn';
 
 const AUTO_PLAY_INTERVAL_MS = 3500;
 const SCROLL_SETTLE_MS = 150;
 
 interface CarouselCardProps {
-  stories: readonly { id: string; title: string }[];
+  stories: readonly { storyId: number; title: string; imageUrl: string }[];
   labelledBy: string;
 }
 
@@ -101,28 +100,24 @@ const CarouselCard = ({ stories, labelledBy }: CarouselCardProps) => {
     >
       {Array.from({ length: count + edgeCount * 2 }, (_, position) => {
         const index = (position - edgeCount + count) % count;
-        const { id, title } = stories[index];
+        const { storyId, title, imageUrl } = stories[index];
         const isClone = position < edgeCount || position >= edgeCount + count;
 
         return (
           <li
-            key={`${position}-${id}`}
+            key={`${position}-${storyId}`}
             aria-hidden={isClone || undefined}
             className="h-[348px] w-[243px] shrink-0 snap-center"
           >
             <Link
-              to={`/worlds/${id}`}
+              to={`/worlds/${storyId}`}
               tabIndex={isClone ? -1 : undefined}
               className={cn(
                 'block size-full rounded-2xl bg-[#e3e3e3] transition-[scale,box-shadow] duration-300 motion-reduce:transition-none',
                 index === activeIndex ? 'shadow-[0_4px_4px_rgba(0,0,0,0.25)]' : 'scale-[0.905]',
               )}
             >
-              <img
-                src={coverPlaceholder}
-                alt={title}
-                className="size-full rounded-2xl object-contain opacity-20"
-              />
+              <img src={imageUrl} alt={title} className="size-full rounded-2xl object-cover" />
             </Link>
           </li>
         );

@@ -11,7 +11,7 @@ const RoleCard = ({ label, title, description, icon, onClick }: RoleCardProps) =
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full cursor-pointer flex-col items-start gap-2 rounded-3xl border border-primary-green-500 bg-primary-green-50 px-5 pt-4 pb-5 text-left shadow-[0_4px_4px_rgba(0,0,0,0.03)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-primary-green-50/75"
+      className="flex w-full cursor-pointer flex-col items-start gap-2 rounded-3xl border border-primary-green-500 bg-primary-green-50 pt-4 pr-[18px] pb-5 pl-5 text-left shadow-[0_4px_4px_rgba(0,0,0,0.03)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-primary-green-50/75"
     >
       <span className="rounded-full bg-white px-2 py-1 text-body-medium-s text-gray-600">
         {label}
