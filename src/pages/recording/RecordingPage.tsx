@@ -1,17 +1,83 @@
+import { useId, useState } from 'react';
+import { useNavigate } from 'react-router';
+
+import BarRecordControlsBottom from '@/pages/recording/components/BarRecordControlsBottom';
+import BgRecordingCircles from '@/pages/recording/components/BgRecordingCircles';
 import RecordingPrompt from '@/pages/recording/components/RecordingPrompt';
+import RecordingTooltip from '@/pages/recording/components/RecordingTooltip';
 import TextCard from '@/pages/recording/components/TextCard';
 import RecordingTranscript from '@/pages/recording/components/RecordingTranscript';
+import useRecordingTimer from '@/pages/recording/hooks/useRecordingTimer';
+import Header from '@/shared/components/header';
 
-const MOCK_TRANSCRIPT =
-  '우리 반에 영철이라는 남학생이 있었어. 공부도 잘하고 친구들한테도 친절해서 인기가 많았지. 나도 그 애를 좋아했는데, 막상 마주치면 말 한마디 제대로 못 했어.\n\n그때 학교 끝나고 집에 가려는데 갑자기 비가 억수같이 쏟아지는 거야. 우산도 없어서 처마 밑에 서 있었는데, 영철이가 다가오더니 자기 우산을 내 손에 쥐여주더라고.';
+type RecordingPageProps = {
+  transcript?: string;
+};
 
-function RecordingPage() {
+function RecordingPage({ transcript = '' }: RecordingPageProps) {
+  const tooltipId = useId();
+  const navigate = useNavigate();
+  const [hasStarted, setHasStarted] = useState(false);
+  const { isRecording, elapsedSeconds, toggleRecording } = useRecordingTimer();
+
+  const handleStartRecording = () => {
+    setHasStarted(true);
+    toggleRecording();
+  };
+
+  const handleStopRecording = () => {
+    toggleRecording();
+    void navigate('/story-review');
+  };
+
   return (
-    <main className="flex min-h-dvh flex-col items-center gap-8 px-5 py-10">
-      <RecordingPrompt />
-      <RecordingTranscript text={MOCK_TRANSCRIPT} />
-      <TextCard />
-    </main>
+    <div className="relative isolate flex h-dvh flex-col overflow-hidden bg-white">
+      <BgRecordingCircles className="absolute -bottom-[371px] left-1/2 -z-10 -translate-x-1/2" />
+
+      <div className="shrink-0 bg-white pt-[env(safe-area-inset-top)]">
+        <Header backTo="/" />
+      </div>
+
+      <main
+        aria-label="추억 녹음"
+        tabIndex={0}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-[66px] pb-6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-green-700"
+      >
+        <RecordingPrompt message={hasStarted ? '녹음이 시작됐어요.' : '녹음이 준비됐어요.'} />
+        {hasStarted && transcript.trim() ? (
+          <RecordingTranscript text={transcript} className="mt-6 text-body-medium-l" />
+        ) : (
+          <TextCard className="mt-10" />
+        )}
+      </main>
+
+      <div className="relative flex shrink-0 flex-col items-center pb-[env(safe-area-inset-bottom)]">
+        {hasStarted ? (
+          <>
+            <RecordingTooltip id={tooltipId} className="pointer-events-none -mb-0.5" />
+            <BarRecordControlsBottom
+              elapsedSeconds={elapsedSeconds}
+              isRecording={isRecording}
+              buttonProps={{
+                'aria-label': '녹음 끝내기',
+                'aria-describedby': tooltipId,
+                onClick: handleStopRecording,
+              }}
+            />
+          </>
+        ) : (
+          <div className="w-full bg-white px-5 pt-2.5 pb-5">
+            <button
+              type="button"
+              onClick={handleStartRecording}
+              className="flex h-14 w-full cursor-pointer items-center justify-center rounded-2xl bg-primary-green-700 p-2.5 text-title-semibold-s text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
+            >
+              녹음 시작하기
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

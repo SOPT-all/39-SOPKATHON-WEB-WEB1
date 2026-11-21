@@ -27,7 +27,7 @@ function BadgeRecordTime({ elapsedSeconds, isRecording = true, className }: Badg
           alt=""
           width={13}
           height={13}
-          className="absolute -top-[1.5px] -left-[1.5px]"
+          className="absolute -top-[1.5px] -left-[1.5px] max-w-none"
         />
       </span>
       <span className="text-body-medium-s whitespace-nowrap text-gray-50">
