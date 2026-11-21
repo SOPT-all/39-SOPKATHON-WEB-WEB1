@@ -1,4 +1,4 @@
-const textClassName = 'font-noto text-[14px] leading-[1.3] tracking-[-0.3px] whitespace-pre-wrap';
+const textClassName = 'font-noto text-body-regular-m tracking-[-0.3px] whitespace-pre-wrap';
 
 interface ChatBubbleProps {
   role: 'ai' | 'user';

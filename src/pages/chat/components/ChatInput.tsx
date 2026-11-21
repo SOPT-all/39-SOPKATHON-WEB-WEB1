@@ -54,8 +54,8 @@ function ChatInput({ value, onChange, onSubmit, isRewrite, disabled }: ChatInput
               isRewrite ? '고친 문장을 다시 입력해 줘!' : '네 생각을 구체적으로 적어 봐!'
             }
             className={cn(
-              'min-w-0 flex-1 bg-transparent py-[14px] font-noto text-[14px] leading-[1.3] tracking-[-0.3px] text-[#0a0a0a] caret-[#004ac6] outline-none',
-              isRewrite ? 'placeholder:text-[#0a0a0a]' : 'placeholder:text-[#767676]',
+              'min-w-0 flex-1 bg-transparent py-[14px] font-noto text-body-regular-m tracking-[-0.3px] text-gray-900 caret-[#004ac6] outline-none',
+              isRewrite ? 'placeholder:text-gray-900' : 'placeholder:text-gray-500',
             )}
           />
           <div className="flex shrink-0 items-center gap-2">
@@ -70,7 +70,7 @@ function ChatInput({ value, onChange, onSubmit, isRewrite, disabled }: ChatInput
               aria-label="보내기"
               className={cn(
                 'size-6 overflow-hidden rounded-[19px]',
-                canSubmit ? 'bg-[#0a0a0a]' : 'bg-[#a5a5a5]',
+                canSubmit ? 'bg-gray-900' : 'bg-gray-400',
               )}
             >
               <img src={canSubmit ? iconArrowUp : iconArrowUpDisabled} alt="" className="size-6" />
