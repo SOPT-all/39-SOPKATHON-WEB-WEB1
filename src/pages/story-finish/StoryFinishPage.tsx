@@ -52,7 +52,7 @@ function StoryFinishPage() {
           <Button
             variant="confirm"
             onClick={() => {
-              void navigate('/');
+              void navigate('/worlds');
             }}
             className="cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
           >
