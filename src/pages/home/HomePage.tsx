@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import RoleCard from '@/pages/home/components/role-card';
 import childIcon from '@/shared/assets/svg/icon-role-child.svg';
 import elderIcon from '@/shared/assets/svg/icon-role-elder.svg';
+import Header from '@/shared/components/header';
 
 const ROLE_OPTIONS = [
   {
@@ -10,7 +10,7 @@ const ROLE_OPTIONS = [
     title: '내 추억 들려주기',
     description: '내가 기억하는 옛날이야기를 목소리로 남겨요.',
     icon: elderIcon,
-    unavailableMessage: '녹음 화면은 준비 중이에요.',
+    to: '/recording',
   },
   {
     label: '초등학생을 위한',
@@ -22,49 +22,41 @@ const ROLE_OPTIONS = [
 ];
 
 function HomePage() {
-  const [status, setStatus] = useState('');
   const navigate = useNavigate();
 
   return (
-    <main
-      lang="ko"
-      className="relative flex min-h-dvh flex-col justify-between gap-8 px-5 pt-[160px] pb-10 text-gray-900"
-    >
-      <div className="space-y-4">
-        <h1 className="text-heading-semibold-s">
-          오늘은 <br />
-          무엇을 하고 싶나요?
-        </h1>
-        <p className="text-title-medium-m text-gray-500">
-          두 가지 방법으로 이야기를 <br />
-          시작할 수 있어요.
-        </p>
-      </div>
-
-      <ul className="space-y-4">
-        {ROLE_OPTIONS.map(({ label, title, description, icon, unavailableMessage, to }) => (
-          <li key={title}>
-            <RoleCard
-              label={label}
-              title={title}
-              description={description}
-              icon={icon}
-              onClick={() => {
-                if (to) void navigate(to);
-                if (unavailableMessage) setStatus(unavailableMessage);
-              }}
-            />
-          </li>
-        ))}
-      </ul>
-
-      <p
-        role="status"
-        className="absolute right-5 bottom-2 left-5 text-body-regular-m text-gray-600"
+    <div className="relative">
+      <Header className="absolute inset-x-0 top-0" />
+      <main
+        lang="ko"
+        className="flex min-h-dvh flex-col justify-between gap-8 px-5 pt-[160px] pb-10 text-gray-900"
       >
-        {status}
-      </p>
-    </main>
+        <div className="space-y-4">
+          <h1 className="text-heading-semibold-s">
+            오늘은 <br />
+            무엇을 하고 싶나요?
+          </h1>
+          <p className="text-title-medium-m text-gray-500">
+            두 가지 방법으로 이야기를 <br />
+            시작할 수 있어요.
+          </p>
+        </div>
+
+        <ul className="space-y-4">
+          {ROLE_OPTIONS.map(({ label, title, description, icon, to }) => (
+            <li key={title}>
+              <RoleCard
+                label={label}
+                title={title}
+                description={description}
+                icon={icon}
+                onClick={() => void navigate(to)}
+              />
+            </li>
+          ))}
+        </ul>
+      </main>
+    </div>
   );
 }
 
