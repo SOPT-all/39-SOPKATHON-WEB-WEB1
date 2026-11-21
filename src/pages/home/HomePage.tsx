@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import RoleCard from '@/pages/home/components/role-card';
 import childIcon from '@/shared/assets/svg/icon-role-child.svg';
 import elderIcon from '@/shared/assets/svg/icon-role-elder.svg';
@@ -16,12 +17,13 @@ const ROLE_OPTIONS = [
     title: '이야기 안으로 들어가기',
     description: '세계관을 골라 이야기의 주인공이 되어 봐요.',
     icon: childIcon,
-    unavailableMessage: '세계관 목록은 준비 중이에요.',
+    to: '/worlds',
   },
 ];
 
 function HomePage() {
   const [status, setStatus] = useState('');
+  const navigate = useNavigate();
 
   return (
     <main
@@ -40,14 +42,17 @@ function HomePage() {
       </div>
 
       <ul className="space-y-4">
-        {ROLE_OPTIONS.map(({ label, title, description, icon, unavailableMessage }) => (
+        {ROLE_OPTIONS.map(({ label, title, description, icon, unavailableMessage, to }) => (
           <li key={title}>
             <RoleCard
               label={label}
               title={title}
               description={description}
               icon={icon}
-              onClick={() => setStatus(unavailableMessage)}
+              onClick={() => {
+                if (to) void navigate(to);
+                if (unavailableMessage) setStatus(unavailableMessage);
+              }}
             />
           </li>
         ))}
