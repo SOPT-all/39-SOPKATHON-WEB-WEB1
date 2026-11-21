@@ -7,6 +7,7 @@ import CorrectionCard from '@/pages/chat/components/CorrectionCard';
 import TypingBubble from '@/pages/chat/components/TypingBubble';
 import { useChat } from '@/pages/chat/hooks/useChat';
 import Header from '@/shared/components/header';
+import { cn } from '@/shared/utils/cn';
 
 interface ChatLocationState {
   worldTitle?: string;
@@ -30,10 +31,18 @@ function ChatPage() {
       <Header
         variant="story_title"
         title={locationState?.worldTitle ?? story?.worldTitle ?? ''}
+        // 채팅 주소로 바로 들어와도 앱 밖으로 나가지 않도록, 뒤로가기는 항상 세계관 상세로 보냅니다.
+        backTo={worldId ? `/worlds/${worldId}` : '/worlds'}
         className="shrink-0 border-b border-gray-100"
       />
 
-      <section className="flex flex-1 flex-col gap-[14px] overflow-y-auto pb-4">
+      <section
+        className={cn(
+          'flex flex-1 flex-col gap-[14px] overflow-y-auto pb-4',
+          // 이야기 시작 응답 전에는 안내 띠가 없어서, 로딩 점이 헤더에 붙지 않도록 위 여백을 줍니다.
+          !story && 'pt-5',
+        )}
+      >
         {story && <ChatGuide text={story.guide} />}
 
         <div className="flex flex-col gap-[14px] px-5">
