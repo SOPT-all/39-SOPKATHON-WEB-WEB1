@@ -66,7 +66,7 @@ function useMicrophoneRecording() {
     };
   }, []);
 
-  const startRecording = async () => {
+  const startRecording = async (onStart?: (stream: MediaStream) => void) => {
     if (statusRef.current !== 'idle') return;
     setError(null);
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
@@ -101,7 +101,10 @@ function useMicrophoneRecording() {
         updateStatus('idle');
       };
       recorder.onstart = () => {
-        if (sessionRef.current === session) updateStatus('recording');
+        if (sessionRef.current === session) {
+          updateStatus('recording');
+          onStart?.(session.stream);
+        }
       };
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) session.chunks.push(event.data);
