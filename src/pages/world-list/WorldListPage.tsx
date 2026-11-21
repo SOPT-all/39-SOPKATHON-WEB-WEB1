@@ -29,11 +29,7 @@ const WorldListPage = () => {
     return () => controller.abort();
   }, []);
 
-  const storiesWithCovers = stories?.filter((story): story is typeof story & { imageUrl: string } =>
-    Boolean(story.imageUrl),
-  );
-
-  if (!storiesWithCovers?.length) {
+  if (!stories?.length) {
     return (
       <>
         <Header variant="brand_title" backTo="/" />
@@ -50,8 +46,11 @@ const WorldListPage = () => {
     );
   }
 
-  const visibleCovers = storiesWithCovers.filter(
-    (story) => genre === 'ALL' || story.category === genre,
+  const visibleStories = stories.filter((story) => genre === 'ALL' || story.category === genre);
+  const visibleCovers = visibleStories.filter((story) => Boolean(story.imageUrl));
+  const visibleTextStories = visibleStories.filter((story) => !story.imageUrl);
+  const storiesWithCovers = stories.filter((story): story is typeof story & { imageUrl: string } =>
+    Boolean(story.imageUrl),
   );
   // 인기순 API가 연결되기 전에는 서버 목록의 표지 있는 이야기로 채웁니다.
   const popularStories = storiesWithCovers.slice(0, 2);
@@ -60,12 +59,14 @@ const WorldListPage = () => {
     <>
       <Header variant="brand_title" backTo="/" />
       <main lang="ko" className="space-y-6 pt-2 pb-6">
-        <section aria-labelledby="featured-worlds" className="space-y-4">
-          <h2 id="featured-worlds" className="px-5 text-title-semibold-m">
-            오늘의 세계관
-          </h2>
-          <CarouselCard stories={storiesWithCovers.slice(0, 3)} labelledBy="featured-worlds" />
-        </section>
+        {storiesWithCovers.length > 0 && (
+          <section aria-labelledby="featured-worlds" className="space-y-4">
+            <h2 id="featured-worlds" className="px-5 text-title-semibold-m">
+              오늘의 세계관
+            </h2>
+            <CarouselCard stories={storiesWithCovers.slice(0, 3)} labelledBy="featured-worlds" />
+          </section>
+        )}
 
         <section aria-labelledby="browse-worlds" className="space-y-4 pl-5">
           <div className="flex items-center justify-between pr-5">
@@ -89,7 +90,7 @@ const WorldListPage = () => {
               </Tag>
             ))}
           </div>
-          {visibleCovers.length > 0 ? (
+          {visibleCovers.length > 0 && (
             <ul
               {...dragHandlers}
               ref={genreListRef}
@@ -101,37 +102,52 @@ const WorldListPage = () => {
                 <StoryListItem
                   key={storyId}
                   title={title}
-                  coverUrl={imageUrl}
+                  coverUrl={imageUrl ?? undefined}
                   to={`/worlds/${storyId}`}
                   className="shrink-0"
                 />
               ))}
             </ul>
-          ) : (
+          )}
+          {visibleTextStories.length > 0 && (
+            <ul aria-label="표지 없는 세계관" className="space-y-2 pr-5">
+              {visibleTextStories.map(({ storyId, title, summary }) => (
+                <StoryListCard
+                  key={storyId}
+                  title={title}
+                  description={summary}
+                  to={`/worlds/${storyId}`}
+                />
+              ))}
+            </ul>
+          )}
+          {visibleStories.length === 0 && (
             <p role="status" className="pr-5 text-body-regular-m text-gray-500">
               아직 등록된 이야기가 없어요.
             </p>
           )}
         </section>
-        <section aria-labelledby="popular-worlds" className="space-y-4 px-5">
-          <div className="flex items-center justify-between">
-            <h2 id="popular-worlds" className="text-title-semibold-m">
-              인기 세계관
-            </h2>
-            <img src={chevronRight} alt="" width={24} height={24} />
-          </div>
-          <ul className="space-y-2">
-            {popularStories.map(({ storyId, title, summary, imageUrl }) => (
-              <StoryListCard
-                key={storyId}
-                title={title}
-                description={summary}
-                coverUrl={imageUrl}
-                to={`/worlds/${storyId}`}
-              />
-            ))}
-          </ul>
-        </section>
+        {popularStories.length > 0 && (
+          <section aria-labelledby="popular-worlds" className="space-y-4 px-5">
+            <div className="flex items-center justify-between">
+              <h2 id="popular-worlds" className="text-title-semibold-m">
+                인기 세계관
+              </h2>
+              <img src={chevronRight} alt="" width={24} height={24} />
+            </div>
+            <ul className="space-y-2">
+              {popularStories.map(({ storyId, title, summary, imageUrl }) => (
+                <StoryListCard
+                  key={storyId}
+                  title={title}
+                  description={summary}
+                  coverUrl={imageUrl}
+                  to={`/worlds/${storyId}`}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
       </main>
     </>
   );
