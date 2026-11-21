@@ -1,15 +1,26 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 
 import FormStoryReview from '@/pages/story-review/components/FormStoryReview';
-import { MOCK_STORY_REVIEW } from '@/pages/story-review/constants/mockStoryReview';
+import type { StoryReview } from '@/pages/story-review/types/storyReview';
+import { STORY_CATEGORY_LABELS } from '@/shared/types/storyDraft';
+import { getStoryDraft, setStoryDraft } from '@/shared/utils/storyDraft';
 import Header from '@/shared/components/header';
 
 function StoryReviewPage() {
   const navigate = useNavigate();
-  const [story, setStory] = useState(MOCK_STORY_REVIEW);
-  const [draft, setDraft] = useState(MOCK_STORY_REVIEW);
+  const [generatedDraft] = useState(getStoryDraft);
+  const [story, setStory] = useState<StoryReview>(() => ({
+    title: generatedDraft?.title ?? '',
+    category: generatedDraft ? STORY_CATEGORY_LABELS[generatedDraft.category] : '',
+    setting: generatedDraft?.setting ?? '',
+    characters: generatedDraft?.characters ?? '',
+    plot: generatedDraft?.coreEvent ?? '',
+  }));
+  const [draft, setDraft] = useState(story);
   const [isEditing, setIsEditing] = useState(false);
+
+  if (!generatedDraft) return <Navigate to="/recording" replace />;
 
   return (
     <div className="flex h-dvh flex-col bg-white">
@@ -29,6 +40,19 @@ function StoryReviewPage() {
             story={draft}
             onChange={setDraft}
             onSave={() => {
+              const category =
+                (
+                  Object.keys(STORY_CATEGORY_LABELS) as Array<keyof typeof STORY_CATEGORY_LABELS>
+                ).find((code) => STORY_CATEGORY_LABELS[code] === draft.category) ??
+                generatedDraft.category;
+              setStoryDraft({
+                ...generatedDraft,
+                title: draft.title,
+                category,
+                setting: draft.setting,
+                characters: draft.characters,
+                coreEvent: draft.plot,
+              });
               setStory(draft);
               setIsEditing(false);
               void navigate('/story-finish', { state: { story: draft } });

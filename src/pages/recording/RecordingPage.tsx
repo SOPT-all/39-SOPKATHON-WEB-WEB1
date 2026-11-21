@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { isAxiosError, isCancel } from 'axios';
+
+import { createStoryDraft, validateTranscript } from '@/shared/apis/storyDraft';
+import { getRecordedTranscript } from '@/shared/utils/recordedTranscript';
+import { setStoryDraft } from '@/shared/utils/storyDraft';
 
 import BarRecordControlsBottom from '@/pages/recording/components/BarRecordControlsBottom';
 import BgRecordingCircles from '@/shared/components/BgRecordingCircles';
@@ -17,8 +22,6 @@ import { setRecordedAudio } from '@/shared/utils/recordedAudio';
 import { cn } from '@/shared/utils/cn';
 import { setRecordedTranscript } from '@/shared/utils/recordedTranscript';
 
-// Replace this preview delay with the world-generation API loading state when connected.
-const STORY_GENERATION_PREVIEW_DELAY_MS = 1200;
 const MOCK_FOLLOW_UP_AFTER_SECONDS = 15;
 const MOCK_FOLLOW_UP_QUESTIONS = ['영철이와 특별히 기억에 남는 일이 있었나요?'];
 
@@ -32,6 +35,9 @@ function RecordingPage() {
   const tooltipId = useId();
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [canRetry, setCanRetry] = useState(false);
+  const requestRef = useRef<AbortController | null>(null);
   const [isFinishing, setIsFinishing] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const followTranscriptRef = useRef(true);
@@ -77,8 +83,12 @@ function RecordingPage() {
 
   useEffect(() => {
     mountedRef.current = true;
+    const abortRequest = () => requestRef.current?.abort();
+    window.addEventListener('pagehide', abortRequest);
     return () => {
+      window.removeEventListener('pagehide', abortRequest);
       mountedRef.current = false;
+      requestRef.current?.abort();
     };
   }, []);
 
@@ -91,15 +101,38 @@ function RecordingPage() {
     if (main && followTranscriptRef.current) main.scrollTop = main.scrollHeight;
   }, [finalText, interimText, showFollowUp]);
 
-  useEffect(() => {
-    if (!isGenerating) return;
-    const timeoutId = window.setTimeout(() => {
+  const generateStory = async (transcript: string) => {
+    if (requestRef.current) return;
+    const validationError = validateTranscript(transcript);
+    setGenerationError(validationError);
+    setCanRetry(false);
+    if (validationError) return;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    setIsGenerating(true);
+    try {
+      const draft = await createStoryDraft({ transcript }, controller.signal);
+      if (!mountedRef.current || controller.signal.aborted) return;
+      setStoryDraft({ ...draft, transcript });
       void navigate('/story-review');
-    }, STORY_GENERATION_PREVIEW_DELAY_MS);
-    return () => window.clearTimeout(timeoutId);
-  }, [isGenerating, navigate]);
+    } catch (cause) {
+      if (!mountedRef.current || isCancel(cause)) return;
+      setGenerationError(
+        isAxiosError(cause) && cause.response?.status === 503
+          ? '지금은 AI를 사용할 수 없어요. 잠시 후 다시 시도해주세요.'
+          : '이야기를 만들지 못했어요. 연결 상태를 확인하고 다시 시도해주세요.',
+      );
+      setCanRetry(true);
+    } finally {
+      if (requestRef.current === controller) requestRef.current = null;
+      if (mountedRef.current) setIsGenerating(false);
+    }
+  };
 
   const handleStartRecording = () => {
+    setGenerationError(null);
+    setCanRetry(false);
+    setStoryDraft(null);
     followUpShownRef.current = false;
     setFollowUpDismissed(false);
     setParagraphPrefix('');
@@ -121,10 +154,8 @@ function RecordingPage() {
     setIsFinishing(false);
     if (!audio) return;
     setRecordedAudio(audio);
-    setRecordedTranscript(
-      separateFollowUpParagraph(text, followUpShownRef.current ? followUpTextRef.current : ''),
-    );
-    setIsGenerating(true);
+    setRecordedTranscript(text);
+    await generateStory(text);
   };
 
   return (
@@ -153,6 +184,21 @@ function RecordingPage() {
           compact={isCompactHeader}
           message={hasStarted ? '녹음이 시작됐어요.' : '녹음이 준비됐어요.'}
         />
+        {generationError && (
+          <div role="alert" className="mt-4 text-body-medium-m text-gray-700">
+            <p>{generationError}</p>
+            {canRetry && (
+              <button
+                type="button"
+                onClick={() => void generateStory(getRecordedTranscript())}
+                disabled={isGenerating}
+                className="mt-2 cursor-pointer underline underline-offset-2"
+              >
+                이야기 생성 다시 시도
+              </button>
+            )}
+          </div>
+        )}
         {error && (
           <p role="alert" className="mt-4 text-body-medium-m text-gray-700">
             {error}
