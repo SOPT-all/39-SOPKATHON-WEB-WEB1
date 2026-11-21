@@ -3,6 +3,7 @@ import { useId } from 'react';
 import type { StoryReview } from '@/pages/story-review/types/storyReview';
 import editIcon from '@/shared/assets/svg/icon-story-edit.svg';
 import SelectStoryGenre from '@/pages/story-review/components/SelectStoryGenre';
+import Button from '@/shared/components/Button';
 import { cn } from '@/shared/utils/cn';
 
 const STORY_FIELDS = [
@@ -85,12 +86,13 @@ function FormStoryReview(props: FormStoryReviewProps) {
             </div>
           ))}
         </div>
-        <button
+        <Button
+          variant="save"
           type="submit"
-          className="flex h-12 w-full cursor-pointer items-center justify-center rounded-lg bg-primary-green-700 p-2.5 text-body-medium-l text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
+          className="cursor-pointer bg-primary-green-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-green-900"
         >
           내용 저장하기
-        </button>
+        </Button>
       </form>
     );
   }
