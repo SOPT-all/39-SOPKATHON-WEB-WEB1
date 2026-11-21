@@ -6,7 +6,16 @@ import Button from '@/shared/components/Button';
 import Header from '@/shared/components/header';
 
 function getStorySummary(state: unknown) {
-  if (!state || typeof state !== 'object' || !('story' in state)) return null;
+  if (
+    !state ||
+    typeof state !== 'object' ||
+    !('story' in state) ||
+    !('storyId' in state) ||
+    typeof state.storyId !== 'number' ||
+    !Number.isSafeInteger(state.storyId) ||
+    state.storyId <= 0
+  )
+    return null;
   const story = state.story;
   if (!story || typeof story !== 'object' || !('title' in story) || !('category' in story))
     return null;
