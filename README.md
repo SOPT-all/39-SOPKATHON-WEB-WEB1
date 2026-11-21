@@ -225,6 +225,4 @@ pnpm format:check
 
 ### After
 
-<img src="./docs/images/webtory-after.JPG" alt="웨비 팀원들 사진 (after)"
-
-사진 준비 중 📷
+<img src="./docs/images/webtory-after.JPG" alt="웨비 팀원들 사진 (after)" width="600" />
