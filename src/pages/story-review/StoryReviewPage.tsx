@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import FormStoryReview from '@/pages/story-review/components/FormStoryReview';
 import { MOCK_STORY_REVIEW } from '@/pages/story-review/constants/mockStoryReview';
 import Header from '@/shared/components/header';
 
 function StoryReviewPage() {
+  const navigate = useNavigate();
   const [story, setStory] = useState(MOCK_STORY_REVIEW);
   const [draft, setDraft] = useState(MOCK_STORY_REVIEW);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +31,7 @@ function StoryReviewPage() {
             onSave={() => {
               setStory(draft);
               setIsEditing(false);
+              void navigate('/story-finish', { state: { story: draft } });
             }}
             className="self-start"
           />

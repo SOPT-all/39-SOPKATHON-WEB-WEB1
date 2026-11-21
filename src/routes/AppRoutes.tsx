@@ -3,6 +3,7 @@ import ChatPage from '@/pages/chat/ChatPage';
 import HomePage from '@/pages/home/HomePage';
 import RecordingPage from '@/pages/recording/RecordingPage';
 import StoryReviewPage from '@/pages/story-review/StoryReviewPage';
+import StoryFinishPage from '@/pages/story-finish/StoryFinishPage';
 import WorldDetailPage from '@/pages/world-detail/WorldDetailPage';
 import WorldListPage from '@/pages/world-list/WorldListPage';
 
@@ -12,6 +13,7 @@ function AppRoutes() {
       <Route path="/" element={<HomePage />} />
       <Route path="/recording" element={<RecordingPage />} />
       <Route path="/story-review" element={<StoryReviewPage />} />
+      <Route path="/story-finish" element={<StoryFinishPage />} />
       <Route path="/worlds" element={<WorldListPage />} />
       <Route path="/worlds/:worldId" element={<WorldDetailPage />} />
       <Route path="/stories/:worldId" element={<ChatPage />} />
