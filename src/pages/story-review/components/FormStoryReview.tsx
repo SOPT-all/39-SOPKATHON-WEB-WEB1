@@ -2,7 +2,7 @@ import { useId } from 'react';
 
 import type { StoryReview } from '@/pages/story-review/types/storyReview';
 import editIcon from '@/shared/assets/svg/icon-story-edit.svg';
-import chevronDown from '@/shared/assets/svg/icon-story-chevron-down.svg';
+import SelectStoryGenre from '@/pages/story-review/components/SelectStoryGenre';
 import { cn } from '@/shared/utils/cn';
 
 const STORY_FIELDS = [
@@ -45,27 +45,11 @@ function FormStoryReview(props: FormStoryReviewProps) {
               </label>
               <div className="relative">
                 {key === 'category' ? (
-                  <>
-                    <select
-                      id={`${id}-${key}`}
-                      value={story[key]}
-                      onChange={(event) => props.onChange({ ...story, [key]: event.target.value })}
-                      className="h-[42px] w-full appearance-none rounded-lg border border-[#e6e6e6] bg-white pr-10 pl-4 text-xs leading-[1.3] focus-visible:outline-2 focus-visible:outline-[#81b261]"
-                    >
-                      {['공포', '로맨스', '스릴러', '액션', '판타지', '기타'].map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                    <img
-                      src={chevronDown}
-                      alt=""
-                      width={20}
-                      height={20}
-                      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2"
-                    />
-                  </>
+                  <SelectStoryGenre
+                    id={`${id}-${key}`}
+                    value={story.category}
+                    onChange={(category) => props.onChange({ ...story, category })}
+                  />
                 ) : (
                   <div className="flex min-h-[42px] items-center justify-between gap-4 rounded-lg border border-[#e6e6e6] bg-white p-3 focus-within:outline-2 focus-within:outline-[#81b261]">
                     {key === 'plot' ? (
