@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router';
-import HeaderPreviewPage from '@/pages/header-preview/HeaderPreviewPage';
 import HomePage from '@/pages/home/HomePage';
 import RecordingPage from '@/pages/recording/RecordingPage';
+import StoryReviewPage from '@/pages/story-review/StoryReviewPage';
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/recording" element={<RecordingPage />} />
-      {import.meta.env.DEV && <Route path="/header-preview" element={<HeaderPreviewPage />} />}
+      <Route path="/story-review" element={<StoryReviewPage />} />
       <Route path="*" element={<main>페이지를 찾을 수 없습니다.</main>} />
     </Routes>
   );
