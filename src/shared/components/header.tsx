@@ -1,6 +1,8 @@
 import { useNavigate, type To } from 'react-router';
 import brandLogo from '@/shared/assets/images/logo-brand.png';
 import chevronLeft from '@/shared/assets/svg/icon-chevron-left.svg';
+import closeIcon from '@/shared/assets/svg/icon-header-close.svg';
+import moreIcon from '@/shared/assets/svg/icon-header-more.svg';
 import { cn } from '@/shared/utils/cn';
 
 interface HeaderProps {
@@ -40,7 +42,20 @@ const Header = ({ variant = 'default', title, backTo, className }: HeaderProps) 
         <img src={chevronLeft} alt="" width={24} height={24} />
       </button>
 
-      {variant !== 'default' && (
+      {variant === 'default' ? (
+        <div
+          aria-hidden="true"
+          className="mr-1.5 ml-auto flex h-[34px] shrink-0 items-center rounded-full bg-[rgba(0,23,51,0.02)] px-0.5 backdrop-blur-[20px]"
+        >
+          <span className="grid size-11 place-items-center">
+            <img src={moreIcon} alt="" width={20} height={20} />
+          </span>
+          <span className="h-4 w-px rounded-full bg-[rgba(0,27,55,0.1)]" />
+          <span className="grid size-11 place-items-center">
+            <img src={closeIcon} alt="" width={20} height={20} />
+          </span>
+        </div>
+      ) : (
         <div className="flex h-[34px] max-w-[176px] min-w-0 items-center gap-1.5 rounded-full pr-2.5 backdrop-blur-[20px]">
           {isBrandTitle && (
             <img
